@@ -24,7 +24,13 @@ class Mnemosine
       @socket = TCPSocket.open('localhost', 4291)
     end
     
-    api_methods :set, :get, :delete_all, :delete, :keys, :exists, :rename, :renamenx, :incr, :decr, :incrby, :decrby, :append, :randomkey, :save, :restore, :set_location, :unset_location
+    api_methods :set, :get, :delete_all, :delete, :keys, :exists, :rename, :renamenx, :incr,
+                :decr, :incrby, :decrby, :append, :randomkey, :save, :restore, :set_location,
+                :unset_location
+    
+    def select_keys(&blk)
+      send_data({"select_keys" => blk.to_source})
+    end
     
   end
 end

@@ -12,3 +12,5 @@ I'll probably hack more features onto this as time permits. I'd like to get repl
 There's currently no security on the database, and it only runs on localhost. As I said, this is just a fun little project, not a serious DB engine.
 
 I'm putting this under the MIT license, so feel free to do whatever you want with it. My only request is that you don't use this as the basis for an entry into the upcoming CodeBrawl competition. While that would be hilarious, it would make me a sad panda.
+
+Mnemosine offers a search system based on code execution. It's kind of like map reduce, but simpler and worse.

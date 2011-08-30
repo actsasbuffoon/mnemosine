@@ -2,6 +2,14 @@ require File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "server"
 
 class ServerTest < Test::Unit::TestCase
   
+  # When run in lib mode, the database just runs as a Ruby lib in your process rather
+  # than starting EventMachine and taking TCP connections. Lib mode is only included
+  # to make testing easier. It doesn't make any sense to use the DB in lib mode for
+  # normal processing.
+  #
+  # In order to use Mnemosine properly, use the client. The client tests are in
+  # the test_client.rb file.
+  
   def setup
     @db = Mnemosine::Server.new(lib: true)
   end
@@ -161,6 +169,15 @@ class ServerTest < Test::Unit::TestCase
     @db.file_location = loc
     assert_equal true, @db.save
     FileUtils.rm loc
+  end
+  
+  def test_select_keys
+    @db.set "foo", 3
+    @db.set "bar", 12
+    @db.set "baz", 9
+    @db.set "lol", 28
+    @db.set "cat", 17
+    assert_equal ["bar", "lol"], @db.select_keys {|k, v| v % 2 == 0}.sort
   end
   
 end

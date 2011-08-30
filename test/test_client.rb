@@ -164,4 +164,13 @@ class ClientTest < Test::Unit::TestCase
     @db.unset_location
   end
   
+  def test_select_keys
+    @db.set "foo", 3
+    @db.set "bar", 12
+    @db.set "baz", 9
+    @db.set "lol", 28
+    @db.set "cat", 17
+    assert_equal ["bar", "lol"], @db.select_keys {|k, v| v % 2 == 0}.sort
+  end
+  
 end

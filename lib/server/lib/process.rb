@@ -1,11 +1,9 @@
-require "eventmachine"
-
 class Mnemosine
   class Server
     
     attr_accessor :file_location
     
-    API_METHODS = %w[set get delete_all delete keys exists randomkey rename renamenx append incr decr incrby decrby save save! restore set_location unset_location]
+    API_METHODS = %w[set get delete_all delete keys exists randomkey rename renamenx append incr decr incrby decrby save save! restore set_location unset_location select_keys]
     
     def initialize(args = {})
       @storage = new_storage

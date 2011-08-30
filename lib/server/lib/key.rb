@@ -41,5 +41,14 @@ class Mnemosine
       end
     end
     
+    def select_keys(src = nil)
+      if src
+        p = eval(src)
+        @storage.select(&p).map(&:first)
+      elsif block_given?
+        @storage.select {|k, v| yield(k, v)}.map(&:first)
+      end
+    end
+    
   end
 end
