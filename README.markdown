@@ -14,3 +14,17 @@ There's currently no security on the database, and it only runs on localhost. As
 I'm putting this under the MIT license, so feel free to do whatever you want with it. My only request is that you don't use this as the basis for an entry into the upcoming CodeBrawl competition. While that would be hilarious, it would make me a sad panda.
 
 Mnemosine offers a search system based on code execution. It's kind of like map reduce, but simpler and worse.
+
+Requirements
+============
+
+Mnemosine is only compatible with Ruby 1.9. You'll need to install the following gems to use Mnemosine:
+
+* eventmachine
+* json
+* slop
+* sourcify
+
+Run the following command to install sourcify:
+
+  gem install ruby_parser file-tail sourcify
