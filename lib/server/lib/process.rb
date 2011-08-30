@@ -3,10 +3,12 @@ class Mnemosine
     
     attr_accessor :file_location
     
-    API_METHODS = %w[set get delete_all delete keys exists randomkey rename renamenx append incr decr incrby decrby save save! restore set_location unset_location select_keys match_key]
+    API_METHODS = %w[set get delete_all delete keys exists randomkey rename renamenx append incr decr incrby decrby save save! restore set_location unset_location select_keys match_keys]
     
     def initialize(args = {})
       @storage = new_storage
+      @port = args[:p] || 4291
+      @host = args[:s] || 'localhost'
       unless args[:lib]
         run_loop
       end
@@ -32,7 +34,8 @@ class Mnemosine
       r = Runner
       r.setup(self)
       EventMachine.run do
-        EventMachine.start_server "127.0.0.1", 4291, r
+        EventMachine.start_server @host, @port, r
+        puts "Mnemosine listening at #{@host}:#{@port}"
       end
     end
     

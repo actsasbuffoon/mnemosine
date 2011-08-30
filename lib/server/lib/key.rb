@@ -50,7 +50,7 @@ class Mnemosine
       end
     end
     
-    def match_key(regex, opts = "")
+    def match_keys(regex, opts = "")
       if regex.class == String
         rgx = Regexp.new(regex, opts)
         @storage.keys.select {|k| k =~ rgx}

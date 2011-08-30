@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+require 'rubygems'
+require 'slop'
+require File.join(File.dirname(__FILE__), "lib", "server", "mnemosine")
+
+opts = Slop.parse do
+  on :p, :port, "Port the server will run on", true, default: 4291, :as => :integer
+  on :s, :host, "Host the server will run on", true, default: 'localhost'
+  on :h, :help, 'Show this message', :tail => true, do
+    puts help
+    exit
+  end
+end
+
+Mnemosine::Server.new(opts)

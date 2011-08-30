@@ -3,7 +3,7 @@ Mnemosine
 
 Mnemosine is a key/value store written in Ruby. It was created for the CodeBrawl competition located here: [http://codebrawl.com/contests/key-value-stores](http://codebrawl.com/contests/key-value-stores)
 
-You can run the Mnemosine server by running "rake run" from the root directory. There is also a client you can use. The API covers a small amount of what Redis can do.
+You can run the Mnemosine server by running "./mnemosine" from the root directory. There is also a Ruby adapter you can use. The API covers a small amount of what Redis can do, plus a tiny bit it can't.
 
 Obviously Ruby is probably not a great choice for creating a database, as one typically wants very high performance. Instead, consider this to be a fun toy. It uses EventMachine on the server and passes JSON via persistent raw TCP connections. It also was also developed BDD style, so it could be good to look at if you're new to testing or Test::Unit.
 

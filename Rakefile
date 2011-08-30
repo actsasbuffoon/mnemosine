@@ -1,11 +1,5 @@
 require 'base64'
 
-desc "Run database server"
-task :run do
-  require File.join(File.dirname(__FILE__), "lib", "server", "mnemosine.rb")
-  Mnemosine::Server.new
-end
-
 desc "Bundle into 1 file to create a gist"
 task :pack do
   files = {}

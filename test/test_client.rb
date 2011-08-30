@@ -176,7 +176,7 @@ class ClientTest < Test::Unit::TestCase
   def test_match
     @db.set "foO", "bar"
     @db.set "bar", "wut"
-    assert_equal ["foO"], @db.match_key(/(\w)\1/i)
+    assert_equal ["foO"], @db.match_keys(/(\w)\1/i)
   end
   
 end
