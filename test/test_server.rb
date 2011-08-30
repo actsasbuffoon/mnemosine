@@ -180,4 +180,10 @@ class ServerTest < Test::Unit::TestCase
     assert_equal ["bar", "lol"], @db.select_keys {|k, v| v % 2 == 0}.sort
   end
   
+  def test_match
+    @db.set "foO", "bar"
+    @db.set "bar", "wut"
+    assert_equal ["foO"], @db.match_key(/(\w)\1/i)
+  end
+  
 end

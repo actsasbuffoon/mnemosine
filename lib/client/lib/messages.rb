@@ -32,5 +32,9 @@ class Mnemosine
       send_data({"select_keys" => blk.to_source})
     end
     
+    def match_key(regex)
+      send_data({"match_key" => [regex.source, regex.options]})
+    end
+    
   end
 end
