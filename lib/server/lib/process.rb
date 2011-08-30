@@ -3,7 +3,9 @@ class Mnemosine
     
     attr_accessor :file_location
     
-    API_METHODS = %w[set get delete_all delete keys exists randomkey rename renamenx append incr decr incrby decrby save save! restore set_location unset_location select_keys match_keys]
+    API_METHODS = %w[set get delete_all delete keys exists randomkey rename renamenx append incr decr incrby decrby
+                     select_keys match_keys hset hget hmset hmget hlen hkeys hincr hincrby hdecr hdecrby hgetall
+                     hexists hdel]
     
     def initialize(args = {})
       @storage = new_storage
