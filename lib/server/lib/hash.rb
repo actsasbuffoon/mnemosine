@@ -1,7 +1,7 @@
 class Mnemosine
   class Server
     
-    def ensure_hash(value, args)
+    def ensure_hash(value, args = {})
       if !args[:empty] && !value
         return {"error" => "Cannot perform that operation on an empty value"}
       elsif !value
@@ -25,6 +25,14 @@ class Mnemosine
     
     def hdel(k, sk)
       ensure_hash(@storage[k], empty: true) || (@storage[k].delete sk)
+    end
+    
+    def hexists(k, sk)
+      ensure_hash(@storage[k]) || !!@storage[k][sk]
+    end
+    
+    def hlen(k)
+      ensure_hash(@storage[k]) || @storage[k].length
     end
     
   end

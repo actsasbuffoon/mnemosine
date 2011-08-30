@@ -56,4 +56,26 @@ class ServerTest < Test::Unit::TestCase
     assert_equal({"error" => "Cannot perform hash operation on non-hash value"}, @db.hdel("foo", "bar"))
   end
   
+  def test_hexists
+    @db.hset "foo", "bar", "baz"
+    assert_equal false, @db.hexists("foo", "lol")
+    assert_equal true, @db.hexists("foo", "bar")
+  end
+  
+  def test_hexists_on_string
+    @db.set "foo", "bar"
+    assert_equal({"error" => "Cannot perform hash operation on non-hash value"}, @db.hexists("foo", "bar"))
+  end
+  
+  def test_hlen
+    @db.hset "foo", "bar", "baz"
+    @db.hset "foo", "lol", "cat"
+    assert_equal 2, @db.hlen("foo")
+  end
+  
+  def test_hlen_on_string
+    @db.set "foo", "bar"
+    assert_equal({"error" => "Cannot perform hash operation on non-hash value"}, @db.hlen("foo"))
+  end
+  
 end
