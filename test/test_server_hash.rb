@@ -1,6 +1,6 @@
 require File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "server", "mnemosine.rb"))
 
-class ServerTest < Test::Unit::TestCase
+class ServerHashTest < Test::Unit::TestCase
   
   # When run in lib mode, the database just runs as a Ruby lib in your process rather
   # than starting EventMachine and taking TCP connections. Lib mode is only included
@@ -12,6 +12,10 @@ class ServerTest < Test::Unit::TestCase
   
   def setup
     @db = Mnemosine::Server.new(lib: true)
+    @numeric_only_message = "That operation is only valid on: Fixnum"
+    @string_only_message = "That operation is only valid on: String"
+    @string_numeric_only_message = "That operation is only valid on: Fixnum, String"
+    @hash_only_message = "That operation is only valid on: Hash"
   end
   
   def teardown
@@ -25,12 +29,12 @@ class ServerTest < Test::Unit::TestCase
   
   def test_hset_on_string
     @db.set "foo", "bar"
-    assert_equal({"error" => "Cannot perform hash operation on non-hash value"}, @db.hset("foo", "bar", "baz"))
+    assert_equal({"error" => @hash_only_message}, @db.hset("foo", "bar", "baz"))
   end
   
   def test_hget_on_string
     @db.set "foo", "bar"
-    assert_equal({"error" => "Cannot perform hash operation on non-hash value"}, @db.hget("foo", "bar"))
+    assert_equal({"error" => @hash_only_message}, @db.hget("foo", "bar"))
   end
   
   def test_hkeys
@@ -41,7 +45,7 @@ class ServerTest < Test::Unit::TestCase
   
   def test_hkeys_on_string
     @db.set "foo", "bar"
-    assert_equal({"error" => "Cannot perform hash operation on non-hash value"}, @db.hkeys("foo"))
+    assert_equal({"error" => @hash_only_message}, @db.hkeys("foo"))
   end
   
   def test_hdel
@@ -53,7 +57,7 @@ class ServerTest < Test::Unit::TestCase
   
   def test_hdel_on_string
     @db.set "foo", "bar"
-    assert_equal({"error" => "Cannot perform hash operation on non-hash value"}, @db.hdel("foo", "bar"))
+    assert_equal({"error" => @hash_only_message}, @db.hdel("foo", "bar"))
   end
   
   def test_hexists
@@ -64,7 +68,7 @@ class ServerTest < Test::Unit::TestCase
   
   def test_hexists_on_string
     @db.set "foo", "bar"
-    assert_equal({"error" => "Cannot perform hash operation on non-hash value"}, @db.hexists("foo", "bar"))
+    assert_equal({"error" => @hash_only_message}, @db.hexists("foo", "bar"))
   end
   
   def test_hlen
@@ -75,7 +79,7 @@ class ServerTest < Test::Unit::TestCase
   
   def test_hlen_on_string
     @db.set "foo", "bar"
-    assert_equal({"error" => "Cannot perform hash operation on non-hash value"}, @db.hlen("foo"))
+    assert_equal({"error" => @hash_only_message}, @db.hlen("foo"))
   end
   
   def test_hgetall
@@ -86,7 +90,7 @@ class ServerTest < Test::Unit::TestCase
   
   def test_hgetall_on_string
     @db.set "foo", "bar"
-    assert_equal({"error" => "Cannot perform hash operation on non-hash value"}, @db.hgetall("foo"))
+    assert_equal({"error" => @hash_only_message}, @db.hgetall("foo"))
   end
   
   def test_hincr
@@ -97,12 +101,12 @@ class ServerTest < Test::Unit::TestCase
   
   def test_hincr_hash_string
     @db.hset "foo", "bar", "baz"
-    assert_equal({"error" => "Cannot perform numeric operation on non-numeric value"}, @db.hincr("foo", "bar"))
+    assert_equal({"error" => @numeric_only_message}, @db.hincr("foo", "bar"))
   end
   
   def test_hincr_string
     @db.set "foo", "bar"
-    assert_equal({"error" => "Cannot perform hash operation on non-hash value"}, @db.hincr("foo", "bar"))
+    assert_equal({"error" => @hash_only_message}, @db.hincr("foo", "bar"))
   end
   
   def test_hdecr
@@ -113,12 +117,12 @@ class ServerTest < Test::Unit::TestCase
   
   def test_hdecr_hash_string
     @db.hset "foo", "bar", "baz"
-    assert_equal({"error" => "Cannot perform numeric operation on non-numeric value"}, @db.hdecr("foo", "bar"))
+    assert_equal({"error" => @numeric_only_message}, @db.hdecr("foo", "bar"))
   end
   
   def test_hdecr_string
     @db.set "foo", "bar"
-    assert_equal({"error" => "Cannot perform hash operation on non-hash value"}, @db.hdecr("foo", "bar"))
+    assert_equal({"error" => @hash_only_message}, @db.hdecr("foo", "bar"))
   end
   
   def test_hincrby
@@ -129,12 +133,12 @@ class ServerTest < Test::Unit::TestCase
   
   def test_hincrby_hash_string
     @db.hset "foo", "bar", "baz"
-    assert_equal({"error" => "Cannot perform numeric operation on non-numeric value"}, @db.hincrby("foo", "bar", 2))
+    assert_equal({"error" => @numeric_only_message}, @db.hincrby("foo", "bar", 2))
   end
   
   def test_hincrby_string
     @db.set "foo", "bar"
-    assert_equal({"error" => "Cannot perform hash operation on non-hash value"}, @db.hincrby("foo", "baz", 2))
+    assert_equal({"error" => @hash_only_message}, @db.hincrby("foo", "baz", 2))
   end
   
   def test_hdecrby
@@ -145,12 +149,12 @@ class ServerTest < Test::Unit::TestCase
   
   def test_hdecrby_hash_string
     @db.hset "foo", "bar", "baz"
-    assert_equal({"error" => "Cannot perform numeric operation on non-numeric value"}, @db.hdecrby("foo", "bar", 2))
+    assert_equal({"error" => @numeric_only_message}, @db.hdecrby("foo", "bar", 2))
   end
   
   def test_hdecrby_string
     @db.set "foo", "bar"
-    assert_equal({"error" => "Cannot perform hash operation on non-hash value"}, @db.hdecrby("foo", "bar", 2))
+    assert_equal({"error" => @hash_only_message}, @db.hdecrby("foo", "bar", 2))
   end
   
   def test_hmset_and_get
@@ -160,12 +164,12 @@ class ServerTest < Test::Unit::TestCase
   
   def test_hmset_string
     @db.set "foo", "bar"
-    assert_equal({"error" => "Cannot perform hash operation on non-hash value"}, @db.hmset("foo", {"bar" => "baz", "lol" => "cat"}))
+    assert_equal({"error" => @hash_only_message}, @db.hmset("foo", {"bar" => "baz", "lol" => "cat"}))
   end
   
   def test_hmget_string
     @db.set "foo", "bar"
-    assert_equal({"error" => "Cannot perform hash operation on non-hash value"}, @db.hmget("foo"))
+    assert_equal({"error" => @hash_only_message}, @db.hmget("foo"))
   end
   
 end

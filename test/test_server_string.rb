@@ -1,6 +1,6 @@
 require File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "server", "mnemosine.rb"))
 
-class ServerTest < Test::Unit::TestCase
+class ServerStringTest < Test::Unit::TestCase
   
   # When run in lib mode, the database just runs as a Ruby lib in your process rather
   # than starting EventMachine and taking TCP connections. Lib mode is only included
@@ -12,6 +12,9 @@ class ServerTest < Test::Unit::TestCase
   
   def setup
     @db = Mnemosine::Server.new(lib: true)
+    @numeric_only_message = "That operation is only valid on: Fixnum"
+    @string_only_message = "That operation is only valid on: String"
+    @string_numeric_only_message = "That operation is only valid on: Fixnum, String"
   end
   
   def teardown
@@ -25,12 +28,12 @@ class ServerTest < Test::Unit::TestCase
   
   def test_set_on_hash
     @db.hset "foo", "bar", "baz"
-    assert_equal({"error" => "Cannot perform string/numeric operation on non-string/numeric value"}, @db.set("foo", "bar"))
+    assert_equal({"error" => @string_numeric_only_message}, @db.set("foo", "bar"))
   end
   
   def test_get_on_hash
     @db.hset "foo", "bar", "baz"
-    assert_equal({"error" => "Cannot perform string/numeric operation on non-string/numeric value"}, @db.get("foo"))
+    assert_equal({"error" => @string_numeric_only_message}, @db.get("foo"))
   end
   
   def test_append_empty
@@ -46,7 +49,7 @@ class ServerTest < Test::Unit::TestCase
   
   def test_append_number
     @db.set "foo", 42
-    assert_equal({"error" => "Cannot perform string operation on non-string value"}, @db.append("foo", "bar"))
+    assert_equal({"error" => @string_only_message}, @db.append("foo", "bar"))
   end
   
   def test_incr
@@ -57,7 +60,7 @@ class ServerTest < Test::Unit::TestCase
   
   def test_incr_string
     @db.set "foo", "bar"
-    assert_equal({"error" => "Cannot perform numeric operation on non-numeric value"}, @db.incr("foo"))
+    assert_equal({"error" => @numeric_only_message}, @db.incr("foo"))
   end
   
   def test_decr
@@ -68,7 +71,7 @@ class ServerTest < Test::Unit::TestCase
   
   def test_decr_string
     @db.set "foo", "bar"
-    assert_equal({"error" => "Cannot perform numeric operation on non-numeric value"}, @db.decr("foo"))
+    assert_equal({"error" => @numeric_only_message}, @db.decr("foo"))
   end
   
   def test_incrby
@@ -79,7 +82,7 @@ class ServerTest < Test::Unit::TestCase
   
   def test_incrby_string
     @db.set "foo", "bar"
-    assert_equal({"error" => "Cannot perform numeric operation on non-numeric value"}, @db.incrby("foo", 2))
+    assert_equal({"error" => @numeric_only_message}, @db.incrby("foo", 2))
   end
   
   def test_decrby
@@ -90,7 +93,7 @@ class ServerTest < Test::Unit::TestCase
   
   def test_decrby_string
     @db.set "foo", "bar"
-    assert_equal({"error" => "Cannot perform numeric operation on non-numeric value"}, @db.decrby("foo", 2))
+    assert_equal({"error" => @numeric_only_message}, @db.decrby("foo", 2))
   end
   
 end

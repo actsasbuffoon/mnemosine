@@ -1,6 +1,6 @@
 require File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "server", "mnemosine.rb"))
 
-class ServerTest < Test::Unit::TestCase
+class ServerPersistenceTest < Test::Unit::TestCase
   
   # When run in lib mode, the database just runs as a Ruby lib in your process rather
   # than starting EventMachine and taking TCP connections. Lib mode is only included
