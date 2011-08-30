@@ -1,14 +1,6 @@
 class Mnemosine
   class Server
     
-    def set(k, v)
-      @storage[k] = v
-    end
-    
-    def get(k)
-      @storage[k]
-    end
-    
     def delete_all
       @storage = new_storage
     end
