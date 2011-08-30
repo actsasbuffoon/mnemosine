@@ -1,16 +1,6 @@
 class Mnemosine
   class Server
     
-    def ensure_hash(value, args = {})
-      if !args[:empty] && !value
-        return {"error" => "Cannot perform that operation on an empty value"}
-      elsif !value
-        return nil
-      elsif value.class != Hash
-        return {"error" => "Cannot perform hash operation on non-hash value"}
-      end
-    end
-    
     def hset(k, sk, v)
       ensure_hash(@storage[k], empty: true) || (@storage[k] ||= {}; @storage[k][sk] = v)
     end
@@ -33,6 +23,34 @@ class Mnemosine
     
     def hlen(k)
       ensure_hash(@storage[k]) || @storage[k].length
+    end
+    
+    def hgetall(k)
+      ensure_hash(@storage[k], empty: true) || @storage[k]
+    end
+    
+    def hincr(k, sk)
+      ensure_hash(@storage[k]) || ensure_numeric(@storage[k][sk]) || @storage[k][sk] += 1
+    end
+    
+    def hdecr(k, sk)
+      ensure_hash(@storage[k]) || ensure_numeric(@storage[k][sk]) || @storage[k][sk] -= 1
+    end
+    
+    def hincrby(k, sk, v)
+      ensure_hash(@storage[k]) || ensure_numeric(@storage[k][sk]) || @storage[k][sk] += v
+    end
+    
+    def hdecrby(k, sk, v)
+      ensure_hash(@storage[k]) || ensure_numeric(@storage[k][sk]) || @storage[k][sk] -= v
+    end
+    
+    def hmset(k, v)
+      ensure_hash(@storage[k], empty: true) || @storage[k] = v
+    end
+    
+    def hmget(k)
+      ensure_hash(@storage[k]) || @storage[k]
     end
     
   end

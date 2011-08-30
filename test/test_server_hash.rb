@@ -78,4 +78,94 @@ class ServerTest < Test::Unit::TestCase
     assert_equal({"error" => "Cannot perform hash operation on non-hash value"}, @db.hlen("foo"))
   end
   
+  def test_hgetall
+    @db.hset "foo", "bar", "baz"
+    @db.hset "foo", "lol", "cat"
+    assert_equal({"bar" => "baz", "lol" => "cat"}, @db.hgetall("foo"))
+  end
+  
+  def test_hgetall_on_string
+    @db.set "foo", "bar"
+    assert_equal({"error" => "Cannot perform hash operation on non-hash value"}, @db.hgetall("foo"))
+  end
+  
+  def test_hincr
+    @db.hset "foo", "bar", 2
+    @db.hincr "foo", "bar"
+    assert_equal 3, @db.hget("foo", "bar")
+  end
+  
+  def test_hincr_hash_string
+    @db.hset "foo", "bar", "baz"
+    assert_equal({"error" => "Cannot perform numeric operation on non-numeric value"}, @db.hincr("foo", "bar"))
+  end
+  
+  def test_hincr_string
+    @db.set "foo", "bar"
+    assert_equal({"error" => "Cannot perform hash operation on non-hash value"}, @db.hincr("foo", "bar"))
+  end
+  
+  def test_hdecr
+    @db.hset "foo", "bar", 2
+    @db.hdecr "foo", "bar"
+    assert_equal 1, @db.hget("foo", "bar")
+  end
+  
+  def test_hdecr_hash_string
+    @db.hset "foo", "bar", "baz"
+    assert_equal({"error" => "Cannot perform numeric operation on non-numeric value"}, @db.hdecr("foo", "bar"))
+  end
+  
+  def test_hdecr_string
+    @db.set "foo", "bar"
+    assert_equal({"error" => "Cannot perform hash operation on non-hash value"}, @db.hdecr("foo", "bar"))
+  end
+  
+  def test_hincrby
+    @db.hset "foo", "bar", 2
+    @db.hincrby "foo", "bar", 2
+    assert_equal 4, @db.hget("foo", "bar")
+  end
+  
+  def test_hincrby_hash_string
+    @db.hset "foo", "bar", "baz"
+    assert_equal({"error" => "Cannot perform numeric operation on non-numeric value"}, @db.hincrby("foo", "bar", 2))
+  end
+  
+  def test_hincrby_string
+    @db.set "foo", "bar"
+    assert_equal({"error" => "Cannot perform hash operation on non-hash value"}, @db.hincrby("foo", "baz", 2))
+  end
+  
+  def test_hdecrby
+    @db.hset "foo", "bar", 2
+    @db.hdecrby "foo", "bar", 2
+    assert_equal 0, @db.hget("foo", "bar")
+  end
+  
+  def test_hdecrby_hash_string
+    @db.hset "foo", "bar", "baz"
+    assert_equal({"error" => "Cannot perform numeric operation on non-numeric value"}, @db.hdecrby("foo", "bar", 2))
+  end
+  
+  def test_hdecrby_string
+    @db.set "foo", "bar"
+    assert_equal({"error" => "Cannot perform hash operation on non-hash value"}, @db.hdecrby("foo", "bar", 2))
+  end
+  
+  def test_hmset_and_get
+    @db.hmset "foo", {"bar" => "baz", "lol" => "cat"}
+    assert_equal({"bar" => "baz", "lol" => "cat"}, @db.hmget("foo"))
+  end
+  
+  def test_hmset_string
+    @db.set "foo", "bar"
+    assert_equal({"error" => "Cannot perform hash operation on non-hash value"}, @db.hmset("foo", {"bar" => "baz", "lol" => "cat"}))
+  end
+  
+  def test_hmget_string
+    @db.set "foo", "bar"
+    assert_equal({"error" => "Cannot perform hash operation on non-hash value"}, @db.hmget("foo"))
+  end
+  
 end
