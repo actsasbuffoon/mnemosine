@@ -148,4 +148,20 @@ module HashTest
     @db.set "foo", "bar"
     assert_equal({"error" => @hash_only_message}, @db.hmget("foo"))
   end
+  
+  def test_hsetnx
+    @db.hsetnx("foo", "bar", "baz")
+    assert_equal("baz", @db.hget("foo", "bar"))
+  end
+  
+  def test_hsetnx_on_string
+    @db.set "foo", "bar"
+    assert_equal({"error" => @hash_only_message}, @db.hsetnx("foo", "bar", "baz"))
+  end
+  
+  def test_hsetnx_taken
+    @db.hset "foo", "bar", "baz"
+    assert_equal({"error" => "That key is already assigned"}, @db.hsetnx("foo", "bar", "lol"))
+  end
+  
 end

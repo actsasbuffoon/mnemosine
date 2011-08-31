@@ -40,7 +40,7 @@ module KeyTest
   def test_renamenx
     @db.set "foo", "bar"
     @db.set "baz", "wut"
-    assert_equal "That key is already assigned", @db.renamenx("foo", "baz").values.first
+    assert_equal({"error" => "That key is already assigned"}, @db.renamenx("foo", "baz"))
     assert_equal "bar", @db.get("foo")
     assert_equal "wut", @db.get("baz")
   end

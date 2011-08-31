@@ -26,7 +26,8 @@ class Mnemosine
     
     api_methods :set, :get, :delete_all, :delete, :keys, :exists, :rename, :renamenx, :incr,
                 :decr, :incrby, :decrby, :append, :randomkey, :hset, :hget, :hmset, :hmget,
-                :hlen, :hkeys, :hincr, :hincrby, :hdecr, :hdecrby, :hgetall, :hexists, :hdel
+                :hlen, :hkeys, :hincr, :hincrby, :hdecr, :hdecrby, :hgetall, :hexists, :hdel,
+                :hsetnx
     
     def select_keys(&blk)
       send_data({"select_keys" => blk.to_source})

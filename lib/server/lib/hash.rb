@@ -6,7 +6,7 @@ class Mnemosine
     end
     
     def hget(k, sk)
-      ensure_hash(@storage[k], empty: true) || (@storage[k][sk])
+      ensure_hash(@storage[k], empty: true) || (@storage[k] && @storage[k][sk])
     end
     
     def hkeys(k)
@@ -51,6 +51,21 @@ class Mnemosine
     
     def hmget(k)
       ensure_hash(@storage[k]) || @storage[k]
+    end
+    
+    def hsetnx(k, sk, v)
+      if !@storage[k]
+        @storage[k] ||= {sk => v}
+      else
+        g = ensure_hash(@storage[k])
+        if g
+          g
+        elsif !@storage[k][sk]
+          @storage[k][sk] = v
+        else
+          {"error" => "That key is already assigned"}
+        end
+      end
     end
     
   end
