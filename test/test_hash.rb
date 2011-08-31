@@ -1,19 +1,4 @@
-require File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "client", "mnemosine.rb"))
-
-class ClientHashTest < Test::Unit::TestCase
-  
-  def setup
-    @db = Mnemosine::Client.new
-    @numeric_only_message = "That operation is only valid on: Fixnum"
-    @string_only_message = "That operation is only valid on: String"
-    @string_numeric_only_message = "That operation is only valid on: Fixnum, String"
-    @hash_only_message = "That operation is only valid on: Hash"
-  end
-  
-  def teardown
-    @db.delete_all
-  end
-  
+module HashTest
   def test_hset
     @db.hset "foo", "bar", "baz"
     assert_equal "baz", @db.hget("foo", "bar")
@@ -163,5 +148,4 @@ class ClientHashTest < Test::Unit::TestCase
     @db.set "foo", "bar"
     assert_equal({"error" => @hash_only_message}, @db.hmget("foo"))
   end
-  
 end

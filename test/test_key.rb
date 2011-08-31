@@ -1,14 +1,4 @@
-require File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "client", "mnemosine.rb"))
-
-class ClientKeyTest < Test::Unit::TestCase
-  
-  def setup
-    @db = Mnemosine::Client.new
-  end
-  
-  def teardown
-    @db.delete_all
-  end
+module KeyTest
   
   def test_delete_all
     @db.set "foo", "bar"

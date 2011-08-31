@@ -1,18 +1,4 @@
-require File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "client", "mnemosine.rb"))
-
-class ClientStringTest < Test::Unit::TestCase
-  
-  def setup
-    @db = Mnemosine::Client.new
-    @numeric_only_message = "That operation is only valid on: Fixnum"
-    @string_only_message = "That operation is only valid on: String"
-    @string_numeric_only_message = "That operation is only valid on: Fixnum, String"
-  end
-  
-  def teardown
-    @db.delete_all
-  end
-  
+module StringTest
   def test_set
     @db.set "foo", "bar"
     assert_equal "bar", @db.get("foo")
