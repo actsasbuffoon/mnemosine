@@ -16,6 +16,7 @@ class MnemosineTest < Test::Unit::TestCase
     @string_only_message = "That operation is only valid on: String"
     @string_numeric_only_message = "That operation is only valid on: Fixnum, String"
     @hash_only_message = "That operation is only valid on: Hash"
+    @list_only_message = "That operation is only valid on: Array"
   end
   
   def teardown
@@ -27,6 +28,7 @@ end
 require File.expand_path(File.join File.dirname(__FILE__), 'test_key.rb')
 require File.expand_path(File.join File.dirname(__FILE__), 'test_string.rb')
 require File.expand_path(File.join File.dirname(__FILE__), 'test_hash.rb')
+require File.expand_path(File.join File.dirname(__FILE__), 'test_list.rb')
 require File.expand_path(File.join File.dirname(__FILE__), 'test_persistence.rb')
 
 require File.expand_path(File.join(File.dirname(__FILE__), "..", "lib", "server", "mnemosine.rb"))
@@ -41,6 +43,7 @@ class ServerTest < MnemosineTest
   include KeyTest
   include StringTest
   include HashTest
+  include ListTest
   include PersistenceTest
 end
 
