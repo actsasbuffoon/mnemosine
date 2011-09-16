@@ -2,37 +2,89 @@ class Mnemosine
   class Server
     
     def set(k, v)
-      ensure_string_or_numeric(@storage[k], empty: true) || @storage[k] = v
+      vl = get!(k)
+      guard = ensure_string(vl, empty: true)
+      return guard if guard
+      
+      if vl
+        vl["value"] = v
+      else
+        @storage[k] = {"var_type" => "String", "value" => v.to_s}
+      end
+      v
     end
-    
+  
     def get(k)
-      ensure_string_or_numeric(@storage[k], empty: true) || @storage[k]
+      vl = get!(k)
+      guard = ensure_string(vl, empty: true)
+      return guard if guard
+      
+      return nil unless vl
+      if vl["var_type"] == "String"
+        vl["value"]
+      else
+        {"error"=>"That operation is only valid on: Fixnum, String"}
+      end
     end
-    
+  
     def append(k, v)
-      g = ensure_string(@storage[k], empty: true)
-      return g if g
+      vl = get!(k)
+      guard = ensure_string(vl, empty: true)
+      return guard if guard
+      
       if exists(k)
-        @storage[k] += v
+        get!(k)["value"] += v
       else
         set k, v
       end
     end
-    
+  
     def incr(k)
-      ensure_numeric(@storage[k]) || @storage[k] += 1
+      vl = get!(k)
+      guard = ensure_string(vl, empty: true)
+      return guard if guard
+      
+      if vl["value"] =~ /^\-?\d+$/
+        vl["value"] = (vl["value"].to_i + 1).to_s
+      else
+        {"error"=>"That operation is only valid on: Fixnum"}
+      end
     end
-    
+  
     def decr(k)
-      ensure_numeric(@storage[k]) || @storage[k] -= 1
+      vl = get!(k)
+      guard = ensure_string(vl, empty: true)
+      return guard if guard
+      
+      if vl["value"] =~ /^\-?\d+$/
+        vl["value"] = (vl["value"].to_i - 1).to_s
+      else
+        {"error"=>"That operation is only valid on: Fixnum"}
+      end
     end
-    
+  
     def incrby(k, v)
-      ensure_numeric(@storage[k]) || @storage[k] += v
+      vl = get!(k)
+      guard = ensure_string(vl, empty: true)
+      return guard if guard
+      
+      if vl["value"] =~ /^\-?\d+$/
+        vl["value"] = (vl["value"].to_i + v).to_s
+      else
+        {"error"=>"That operation is only valid on: Fixnum"}
+      end
     end
-    
+  
     def decrby(k, v)
-      ensure_numeric(@storage[k]) || @storage[k] -= v
+      vl = get!(k)
+      guard = ensure_string(vl, empty: true)
+      return guard if guard
+      
+      if vl["value"] =~ /^\-?\d+$/
+        vl["value"] = (vl["value"].to_i - v).to_s
+      else
+        {"error"=>"That operation is only valid on: Fixnum"}
+      end
     end
     
   end

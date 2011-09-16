@@ -8,7 +8,12 @@ class Mnemosine
     
     def send_data(msg)
       @socket.puts msg.to_json
-      JSON.parse(@socket.readline)["val"]
+      v = JSON.parse(@socket.readline)["val"]
+      if v && v.class == Hash
+        v["value"] ? v["value"] : v
+      else
+        v
+      end
     end
     
     def self.api_methods(*mthds)

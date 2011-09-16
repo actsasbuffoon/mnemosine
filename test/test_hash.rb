@@ -73,7 +73,7 @@ module HashTest
   def test_hincr
     @db.hset "foo", "bar", 2
     @db.hincr "foo", "bar"
-    assert_equal 3, @db.hget("foo", "bar")
+    assert_equal "3", @db.hget("foo", "bar")
   end
   
   def test_hincr_hash_string
@@ -89,7 +89,7 @@ module HashTest
   def test_hdecr
     @db.hset "foo", "bar", 2
     @db.hdecr "foo", "bar"
-    assert_equal 1, @db.hget("foo", "bar")
+    assert_equal "1", @db.hget("foo", "bar")
   end
   
   def test_hdecr_hash_string
@@ -105,7 +105,7 @@ module HashTest
   def test_hincrby
     @db.hset "foo", "bar", 2
     @db.hincrby "foo", "bar", 2
-    assert_equal 4, @db.hget("foo", "bar")
+    assert_equal "4", @db.hget("foo", "bar")
   end
   
   def test_hincrby_hash_string
@@ -121,7 +121,7 @@ module HashTest
   def test_hdecrby
     @db.hset "foo", "bar", 2
     @db.hdecrby "foo", "bar", 2
-    assert_equal 0, @db.hget("foo", "bar")
+    assert_equal "0", @db.hget("foo", "bar")
   end
   
   def test_hdecrby_hash_string

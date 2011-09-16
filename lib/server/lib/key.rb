@@ -6,7 +6,7 @@ class Mnemosine
     end
     
     def delete(k)
-      @storage.delete k
+      @storage.delete(k)["value"]
     end
     
     def keys
@@ -14,7 +14,7 @@ class Mnemosine
     end
     
     def exists(k)
-      !!@storage[k]
+      !!get!(k)
     end
     
     def randomkey
@@ -22,7 +22,8 @@ class Mnemosine
     end
     
     def rename(old_key, new_key)
-      @storage[new_key] = delete(old_key)
+      @storage[new_key] = get!(old_key)
+      delete(old_key)
     end
     
     def renamenx(old_key, new_key)
@@ -36,9 +37,9 @@ class Mnemosine
     def select_keys(src = nil)
       if src
         p = eval(src)
-        @storage.select(&p).map(&:first)
+        @storage.select {|k, v| p.call(k, v["value"])}.map(&:first)
       elsif block_given?
-        @storage.select {|k, v| yield(k, v)}.map(&:first)
+        @storage.select {|k, v| yield(k, v["value"])}.map(&:first)
       end
     end
     
@@ -49,6 +50,12 @@ class Mnemosine
       else
         @storage.keys.select {|k| k =~ regex}
       end
+    end
+    
+  private
+    
+    def get!(k)
+      @storage[k]
     end
     
   end

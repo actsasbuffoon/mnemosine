@@ -2,66 +2,149 @@ class Mnemosine
   class Server
     
     def hset(k, sk, v)
-      ensure_hash(@storage[k], empty: true) || (@storage[k] ||= {}; @storage[k][sk] = v)
+      vl = get!(k)
+      guard = ensure_hash(vl, empty: true)
+      return guard if guard
+      
+      if !vl
+        @storage[k] = {"var_type" => "Hash", "value" => {sk.to_s => v.to_s}}
+        v.to_s
+      elsif vl["var_type"] == "Hash"
+        @storage[k]["value"][sk.to_s] = v.to_s
+      else
+        {"error"=>"That operation is only valid on: Hash"}
+      end
     end
     
     def hget(k, sk)
-      ensure_hash(@storage[k], empty: true) || (@storage[k] && @storage[k][sk])
+      vl = get!(k)
+      guard = ensure_hash(vl, empty: true)
+      return guard if guard
+      
+      vl["value"][sk]
     end
     
     def hkeys(k)
-      ensure_hash(@storage[k], empty: true) || (@storage[k].keys)
+      vl = get!(k)
+      guard = ensure_hash(vl, empty: true)
+      return guard if guard
+      
+      vl["value"].keys
     end
     
     def hdel(k, sk)
-      ensure_hash(@storage[k], empty: true) || (@storage[k].delete sk)
+      vl = get!(k)
+      guard = ensure_hash(vl, empty: true)
+      return guard if guard
+      
+      vl["value"].delete sk
     end
     
     def hexists(k, sk)
-      ensure_hash(@storage[k]) || !!@storage[k][sk]
+      vl = get!(k)
+      guard = ensure_hash(vl, empty: true)
+      return guard if guard
+      
+      !!vl["value"][sk]
     end
     
     def hlen(k)
-      ensure_hash(@storage[k]) || @storage[k].length
+      vl = get!(k)
+      guard = ensure_hash(vl, empty: true)
+      return guard if guard
+      
+      vl["value"].length
     end
     
     def hgetall(k)
-      ensure_hash(@storage[k], empty: true) || @storage[k]
+      vl = get!(k)
+      guard = ensure_hash(vl, empty: true)
+      return guard if guard
+      
+      vl["value"]
     end
     
     def hincr(k, sk)
-      ensure_hash(@storage[k]) || ensure_numeric(@storage[k][sk]) || @storage[k][sk] += 1
+      vl = get!(k)
+      guard = ensure_hash(vl, empty: true)
+      return guard if guard
+      
+      if vl["value"][sk] =~ /^\d+$/
+        vl["value"][sk] = (vl["value"][sk].to_i + 1).to_s
+      else
+        {"error"=>"That operation is only valid on: Fixnum"}
+      end
     end
     
     def hdecr(k, sk)
-      ensure_hash(@storage[k]) || ensure_numeric(@storage[k][sk]) || @storage[k][sk] -= 1
+      vl = get!(k)
+      guard = ensure_hash(vl, empty: true)
+      return guard if guard
+      
+      if vl["value"][sk] =~ /^\d+$/
+        vl["value"][sk] = (vl["value"][sk].to_i - 1).to_s
+      else
+        {"error"=>"That operation is only valid on: Fixnum"}
+      end
     end
     
     def hincrby(k, sk, v)
-      ensure_hash(@storage[k]) || ensure_numeric(@storage[k][sk]) || @storage[k][sk] += v
+      vl = get!(k)
+      guard = ensure_hash(vl, empty: true)
+      return guard if guard
+      
+      if vl["value"][sk] =~ /^\d+$/
+        vl["value"][sk] = (vl["value"][sk].to_i + v).to_s
+      else
+        {"error"=>"That operation is only valid on: Fixnum"}
+      end
     end
     
     def hdecrby(k, sk, v)
-      ensure_hash(@storage[k]) || ensure_numeric(@storage[k][sk]) || @storage[k][sk] -= v
+      vl = get!(k)
+      guard = ensure_hash(vl, empty: true)
+      return guard if guard
+      
+      if vl["value"][sk] =~ /^\d+$/
+        vl["value"][sk] = (vl["value"][sk].to_i - v).to_s
+      else
+        {"error"=>"That operation is only valid on: Fixnum"}
+      end
     end
     
     def hmset(k, v)
-      ensure_hash(@storage[k], empty: true) || @storage[k] = v
+      vl = get!(k)
+      guard = ensure_hash(vl, empty: true)
+      return guard if guard
+      
+      if vl
+        vl["value"] = v
+      else
+        @storage[k] = {"var_type" => "Hash", "value" => v}
+      end
     end
     
     def hmget(k)
-      ensure_hash(@storage[k]) || @storage[k]
+      vl = get!(k)
+      guard = ensure_hash(vl, empty: true)
+      return guard if guard
+      
+      vl["value"]
     end
     
     def hsetnx(k, sk, v)
-      if !@storage[k]
-        @storage[k] ||= {sk => v}
+      vl = get!(k)
+      guard = ensure_hash(vl, empty: true)
+      return guard if guard
+      
+      if !vl
+        hset(k, sk, v)
       else
-        g = ensure_hash(@storage[k])
+        g = ensure_hash(@storage[k], empty: false)
         if g
           g
-        elsif !@storage[k][sk]
-          @storage[k][sk] = v
+        elsif !vl["value"][sk]
+          hset k, sk, v
         else
           {"error" => "That key is already assigned"}
         end

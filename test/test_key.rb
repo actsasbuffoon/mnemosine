@@ -51,7 +51,7 @@ module KeyTest
     @db.set "baz", 9
     @db.set "lol", 28
     @db.set "cat", 17
-    assert_equal ["bar", "lol"], @db.select_keys {|k, v| v % 2 == 0}.sort
+    assert_equal ["bar", "lol"], @db.select_keys {|k, v| v.to_i % 2 == 0}.sort
   end
   
   def test_match

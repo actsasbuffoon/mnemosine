@@ -2,28 +2,52 @@ class Mnemosine
   class Server
     
     def lset(k, sk, v)
-      ensure_integer_key(sk) || ensure_array(@storage[k], empty: true) || (@storage[k] ||= []; @storage[k][sk] = v)
+      vl = get!(k)
+      guard = ensure_array(vl, empty: true)
+      return guard if guard
+      
+      if sk.class == Fixnum
+        @storage[k] ||= {"var_type" => "Array", "value" => []}
+        @storage[k]["value"][sk] = v
+      else
+        {"error"=>"Key must be an integer"}
+      end
+      
     end
     
     def lget(k, sk)
-      ensure_integer_key(sk) || ensure_array(@storage[k]) || @storage[k][sk]
+      vl = get!(k)
+      guard = ensure_array(vl, empty: true)
+      return guard if guard
+      
+      if sk.class == Fixnum
+        vl["value"][sk]
+      else
+        {"error"=>"Key must be an integer"}
+      end
     end
     
     def lrange(k, start, stop)
-      ensure_array(@storage[k]) || @storage[k][start..stop]
+      vl = get!(k)
+      guard = ensure_array(vl, empty: true)
+      return guard if guard
+      
+      vl["value"][start..stop]
     end
     
     def linsert(k, replace, v)
-      g = ensure_array(@storage[k])
-      return g if g
+      vl = get!(k)
+      guard = ensure_array(vl, empty: true)
+      return guard if guard
+
       replace_idx = nil
-      @storage[k].each.with_index do |val, idx|
+      vl["value"].each.with_index do |val, idx|
         if val == replace
           replace_idx = idx
           break
         end
       end
-      replace_idx ? @storage[k].insert(replace_idx, v) : {"error" => "Value to replace not found"}
+      replace_idx ? vl["value"].insert(replace_idx, v) : {"error" => "Value to replace not found"}
     end
     
   end
